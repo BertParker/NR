@@ -7,22 +7,17 @@ float Jac[2][2];
 float Inverse[2][2];
 float Result[2];
 
-void getFunction(float *F, float x, float y, float r1, float r2, float xa, float ya, float xb, float yb, float xc, float yc){
-
-	float r1 = C*tauAB;
-	float r2 = C*tauAC;
-
+void getFunction(float x, float y, float r1, float r2, float xa, float ya, float xb, float yb, float xc, float yc){
 	F[0] = sqrt(pow(x-xb, 2) + pow(x-yb,2)) - sqrt(pow(x-xa, 2) + pow(x-ya,2)) - r1;
 	F[1] = sqrt(pow(x-xc, 2) + pow(x-yc,2)) - sqrt(pow(x-xa, 2) + pow(x-ya,2)) - r2;
-
 }
 
-float * getJacobian(float * Jac, float x, float y, float xa, float ya, float xb, float yb, float xc, float yc){
+void getJacobian(float x, float y, float xa, float ya, float xb, float yb, float xc, float yc){
 	//Calculate derivative 
 	Jac[0][0] = (x-xb)*(pow(pow(x-xb, 2) + pow(y-yb, 2), -0.5)) - (x-xa)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5));
 	Jac[0][1] = (y-yb)*(pow(pow(x-xb, 2) + pow(y-yb, 2), -0.5)) - (y-ya)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5));
-	Jac[1][0] = (x-xc)*(pow(pow(x-xc, 2) + pow(y-yc, 2), -0.5)) - (x-xa)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5))
-	Jac[1][1] = (y-yc)*(pow(pow(x-xc, 2) + pow(y-yc, 2), -0.5)) - (y-ya)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5))
+	Jac[1][0] = (x-xc)*(pow(pow(x-xc, 2) + pow(y-yc, 2), -0.5)) - (x-xa)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5));
+	Jac[1][1] = (y-yc)*(pow(pow(x-xc, 2) + pow(y-yc, 2), -0.5)) - (y-ya)*(pow(pow(x-xa,2) + pow(y-ya,2),-0.5));
 }
 
 void getInverse2x2(){
@@ -43,14 +38,9 @@ void getInverse2x2(){
 }
 
 void mult2x2Matrix(){
-	//define
-	float result[2];
-
 	//Compute Inverse[2][2]*F[2]
-	result[0] = Inverse[0][0]*F[0] + Inverse[0][1]*F[1];
-	result[1] = Inverse[1][0]*F[0] + Inverse[1][1]*F[1];
-
-	return result;
+	Result[0] = Inverse[0][0]*F[0] + Inverse[0][1]*F[1];
+	Result[1] = Inverse[1][0]*F[0] + Inverse[1][1]*F[1];
 }
 
 float calculateError(float xOld, float yOld, float x, float y){
@@ -103,11 +93,11 @@ int triangulate(float xa, float ya, float xb, float yb, float xc, float yc, int 
 	while(err < 0.1){
 		//Calculate function into F
 		//F =
-		getFunction(F, x, y, rAB, rAC, xa, ya, xb, yb, xc, yc);
+		getFunction(x, y, rAB, rAC, xa, ya, xb, yb, xc, yc);
 
 		//Calculate derivatives into Jac
 		//Jac =
-		getJacobian(Jac, x, y, xa, ya, xb, yb, xc, yc);
+		getJacobian(x, y, xa, ya, xb, yb, xc, yc);
 
 		//Place inverse of Jac into Inverse
 		//Inverse =
