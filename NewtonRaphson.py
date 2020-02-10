@@ -1,4 +1,7 @@
+#!python3
+
 import numpy as np
+
 
 def lorenzSysNR(X):
 	x = X[0]
@@ -8,6 +11,9 @@ def lorenzSysNR(X):
 	fval = np.array([x-y, 2*x - x*z - y,x*y - 3*z])
 	jac = np.array([[1, -1, 0],[2-z,-1,-x],[y,x,-3]])
 
+	#idk why these werent floats already
+	jac = jac.astype(float)
+	fval = fval.astype(float)
 	return fval, jac
 
 
@@ -23,7 +29,9 @@ def multiVarNR():
 
 	for i in range(50):
 		f, j = lorenzSysNR(X)
-
+		print(j.shape)
+		print(f.shape)
+		print(X.shape)
 		X = X - np.matmul(np.linalg.inv(j), f)
 
 		err = abs(X-Xold)
