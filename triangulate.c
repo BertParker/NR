@@ -102,15 +102,19 @@ int triangulate(float xa, float ya, float xb, float yb, float xc, float yc, int 
 
 	while(err < 0.1){
 		//Calculate function into F
+		//F =
 		getFunction(F, x, y, rAB, rAC, xa, ya, xb, yb, xc, yc);
 
 		//Calculate derivatives into Jac
+		//Jac =
 		getJacobian(Jac, x, y, xa, ya, xb, yb, xc, yc);
 
 		//Place inverse of Jac into Inverse
+		//Inverse =
 		getInverse2x2();
 
 		//Multiply Inverse and F into Result
+		//Result = 
 		mult2x2Matrix();
 
 		//Calculate error between new and old values
