@@ -11,7 +11,6 @@ int angle;
 void getFunction(double x, double y, double r1, double r2, double xa, double ya, double xb, double yb, double xc, double yc){
 	F[0] = sqrt(pow(x-xb, 2) + pow(y-yb,2)) - sqrt(pow(x-xa, 2) + pow(y-ya,2)) - r1;
 	F[1] = sqrt(pow(x-xc, 2) + pow(y-yc,2)) - sqrt(pow(x-xa, 2) + pow(y-ya,2)) - r2;
-	printf("%f", r1);
 }
 
 void getJacobian(double x, double y, double xa, double ya, double xb, double yb, double xc, double yc){
@@ -71,7 +70,8 @@ int getAngle(double x, double y){
 
 	//Compute angle in degrees
 	double rad2Deg = 180.0/3.14;
-	return (int)(angle + quad);
+	int a = (int)(atan(y/x)*rad2Deg);
+	return (a + quad);
 }
 
 //maybe put a thermistor here
@@ -80,7 +80,7 @@ double getTemperature(){
 }
 
 double getSpeedOfSound(){
-	return 343.0;
+	return 3430.0;
 }
 
 int triangulate(double xa, double ya, double xb, double yb, double xc, double yc, double ta, double tb, double tc){
@@ -92,7 +92,6 @@ int triangulate(double xa, double ya, double xb, double yb, double xc, double yc
 	double yOld = y;
 	double err = 1;
 	double rAB = getSpeedOfSound()*(tb - ta);
-	printf("%f", rAB);
 	double rAC = getSpeedOfSound()*(tc - ta);
 
 
@@ -105,8 +104,8 @@ int triangulate(double xa, double ya, double xb, double yb, double xc, double yc
 		//Jac =
 		getJacobian(x, y, xa, ya, xb, yb, xc, yc);
 
-		printf("[%f, %f]\n", F[0], F[1]);
-		printf("[%f, %f, %f, %f]\n", Jac[0][0], Jac[0][1], Jac[1][0], Jac[1][1]);
+		//printf("[%f, %f]\n", F[0], F[1]);
+		//printf("[%f, %f, %f, %f]\n", Jac[0][0], Jac[0][1], Jac[1][0], Jac[1][1]);
 
 		//Place inverse of Jac into Inverse
 		//Inverse =
@@ -128,14 +127,17 @@ int triangulate(double xa, double ya, double xb, double yb, double xc, double yc
 		xOld = x;
 		yOld = y;
 	}
-	printf("X: %f Y: %f\n", x, y);
 	//Note: this returns the angle from the perspective of the Mic which received the sound first
-	angle = getAngle(x,y);
-	printf("angle: %d", angle);
+	printf("x: %f, y: %f\n",x,y);
+	return getAngle(x,y);
 }
 
 int main(){
 	//triangulate(-0.10, -0.0866, 0.010, -0.0866, 0.0, 0.0866, 0.000023, 0.000039, 0.000045);
-	triangulate(0.0, -2.0, -3.0, 2.0, 3.0, 2.0, 0.00583, 0.01505, 0.01505);
+	//int angle = triangulate(0.0, -2.0, -3.0, 2.0, 3.0, 2.0, 0.00583, 0.01505, 0.01505);
+	//int angle = triangulate(0.0, -2.0, -3.0, 2.0, 3.0, 2.0, 0.00583, 0.01505, 0.01505);
+
+	//int angle = triangulate(0.0, -0.1016, -0.1016, 0.1016, 0.1016, 0.1016, 0.00494206, 0.00514609, 0.00514609);
+	int angle = triangulate(0.0, -10.16, -10.16, 10.16, 10.16, 10.16, 0.0494206, 0.0514609, 0.0514609);
 	printf("angle: %d", angle);
 }
